@@ -31,7 +31,7 @@
                 img.onload = function () {
                     // Create HTML elements for each product
                     var productHtml = `
-                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.idCategory}">
                             <div class="block2">
                                 <div class="block2-pic hov-img0">
                                     <img src="${img.src}" alt="${product.title}" />
