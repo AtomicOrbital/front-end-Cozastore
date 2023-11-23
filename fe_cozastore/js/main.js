@@ -3,76 +3,6 @@
     "use strict";
 
     $(document).ready(function () {
-        $.ajax({
-            url: 'http://localhost:8080/product',
-            type: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                if (response.statusCode === 200) {
-                    // Process the data and update the HTML
-                    displayProducts(response.data);
-                } else {
-                    console.error('Error: ' + response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error: ' + status + ' - ' + error);
-            }
-        });
-    
-        function displayProducts(products) {
-            var productContainer = $('#product-container'); // Replace with your actual container ID
-        
-            products.forEach(function (product) {
-                // Create an Image object to load the image
-                var img = new Image();
-                
-                // Set up the onload and onerror handlers
-                img.onload = function () {
-                    // Create HTML elements for each product
-                    var productHtml = `
-                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.idCategory}">
-                            <div class="block2">
-                                <div class="block2-pic hov-img0">
-                                    <img src="${img.src}" alt="${product.title}" />
-                                    <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                                        Quick View
-                                    </a>
-                                </div>
-                                <div class="block2-txt flex-w flex-t p-t-14">
-                                    <div class="block2-txt-child1 flex-col-l">
-                                        <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            ${product.title}
-                                        </a>
-                                        <span class="stext-105 cl3"> $${product.price} </span>
-                                    </div>
-                                    <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON" />
-                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-        
-                    // Append the product HTML to the container
-                    productContainer.append(productHtml);
-                };
-        
-                img.onerror = function () {
-                    console.error('Error loading image:', img.src);
-                };
-        
-                // Set the image source to trigger loading
-                img.src = 'http://localhost:8080/api/images/' + product.images;
-            });
-        }
-
-
-
-
     /*[ Load page ]
     ===========================================================*/
     $(".animsition").animsition({
@@ -348,6 +278,71 @@
         $('.js-modal1').removeClass('show-modal1');
     });
 
+    $.ajax({
+        url: 'http://localhost:8080/product',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                displayProducts(response.data);
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
 
+    function displayProducts(products) {
+        var productContainer = $('#product-container'); // Replace with your actual container ID
+    
+        products.forEach(function (product) {
+            // Create an Image object to load the image
+            var img = new Image();
+            
+            // Set up the onload and onerror handlers
+            img.onload = function () {
+                // Create HTML elements for each product
+                var productHtml = `
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.idCategory}">
+                        <div class="block2">
+                            <div class="block2-pic hov-img0">
+                                <img src="${img.src}" alt="${product.title}" />
+                                <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+                                    Quick View
+                                </a>
+                            </div>
+                            <div class="block2-txt flex-w flex-t p-t-14">
+                                <div class="block2-txt-child1 flex-col-l">
+                                    <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                        ${product.title}
+                                    </a>
+                                    <span class="stext-105 cl3"> $${product.price} </span>
+                                </div>
+                                <div class="block2-txt-child2 flex-r p-t-3">
+                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                        <img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON" />
+                                        <img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+    
+                // Append the product HTML to the container
+                productContainer.append(productHtml);
+            };
+    
+            img.onerror = function () {
+                console.error('Error loading image:', img.src);
+            };
+    
+            // Set the image source to trigger loading
+            img.src = 'http://localhost:8080/api/images/' + product.images;
+        });
+    }
     });
 })(jQuery);
