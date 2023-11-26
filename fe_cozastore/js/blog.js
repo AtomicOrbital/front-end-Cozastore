@@ -18,6 +18,23 @@ $(document).ready(function () {
         }
     });
 
+    $.ajax({
+        url: 'http://localhost:8080/product',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                displayRandomProducts(response.data);
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
+
     function displayBlog(blogs) {
         
         blogs.forEach(function (blog) {
@@ -222,7 +239,14 @@ $(document).ready(function () {
             blogsByMonth[key].push(blog);
         });
     
-        var sortedMonths = Object.keys(blogsByMonth).sort();
+        var sortedMonths = Object.keys(blogsByMonth).sort(function (a, b) {
+            // Convert keys to Date objects for comparison
+            var dateA = new Date(a);
+            var dateB = new Date(b);
+        
+            // Compare dates
+            return dateB - dateA;
+        });
     
         sortedMonths.forEach(function (key) {
             // Create a new <li> element
@@ -247,9 +271,69 @@ $(document).ready(function () {
             liElement.appendChild(aElement);
 
             // Append the <li> to the existing <ul> container
-            sortedMonthsContainer.appendChild(liElement);
-    
-            console.log('Published in ' + key); // Grouped posts here.
+            sortedMonthsContainer.appendChild(liElement);    
         });
+    }
+
+    function displayRandomProducts(products) {
+        var productContainer = $('#featured-product-container'); // Replace with your actual container ID
+        
+        var randomProducts = getRandomProducts(products, 3);
+        randomProducts.forEach(function (product) {
+            // Create an Image object to load the image
+            var img = new Image();
+            img.crossOrigin="anonymous"
+    
+            // Set up the onload and onerror handlers
+            img.onload = function () {
+                // Create a canvas element for resizing
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+    
+                // Set the canvas dimensions to the desired size
+                canvas.width = 90;
+                canvas.height = 110;
+    
+                // Draw the image on the canvas with the desired dimensions
+                ctx.drawImage(img, 0, 0, 90, 110);
+    
+                // Get the resized image as a data URL
+                var resizedImgUrl = canvas.toDataURL();
+    
+                // Create HTML elements for each product
+                var productHtml = `
+                    <li class="flex-w flex-t p-b-30">
+                        <a href="#" class="wrap-pic-w size-214 hov-ovelay1 m-r-20">
+                            <img src="${resizedImgUrl}" alt="${product.title}" />
+                        </a>
+                        <div class="size-215 flex-col-t p-t-8">
+                            <a href="#" class="stext-116 cl8 hov-cl1 trans-04">
+                                ${product.title}
+                            </a>
+                            <span class="stext-116 cl6 p-t-20"> $${product.price} </span>
+                        </div>
+                    </li>
+                `;
+    
+                // Append the product HTML to the container
+                productContainer.append(productHtml);
+            };
+    
+            img.onerror = function () {
+                console.error('Error loading image:', img.src);
+            };
+    
+            // Set the image source to trigger loading
+            img.src = 'http://localhost:8080/api/images/' + product.images;
+        });
+    }
+    
+    function getRandomProducts(products, num) {
+        var shuffledProducts = products.slice(); // Copy the array to avoid modifying the original
+        for (var i = shuffledProducts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            [shuffledProducts[i], shuffledProducts[j]] = [shuffledProducts[j], shuffledProducts[i]];
+        }
+        return shuffledProducts.slice(0, num);
     }
 });
