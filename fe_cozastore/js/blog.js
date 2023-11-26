@@ -1,16 +1,16 @@
 $(document).ready(function () {
     var blogContainer = $('#blog-container');
+
+    // Query for blogs.
     $.ajax({
         url: 'http://localhost:8080/blogs',
         type: 'GET',
         dataType: 'json',
         success: function (response) {
             if (response.statusCode === 200) {
-                displayBlog(response.data);
+                displayBlogs(response.data);
                 displayTags(response.data);
                 displaySortedBlogDates(response.data);
-            } else {
-                console.error('Error: ' + response.message);
             }
         },
         error: function (xhr, status, error) {
@@ -18,6 +18,7 @@ $(document).ready(function () {
         }
     });
 
+    // Query for products. (Random display)
     $.ajax({
         url: 'http://localhost:8080/product',
         type: 'GET',
@@ -35,7 +36,73 @@ $(document).ready(function () {
         }
     });
 
-    function displayBlog(blogs) {
+    // Query for comments. And then modify the comment values under the blogs
+    $.ajax({
+        url: 'http://localhost:8080/comments',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                setTimeout(function () {
+                    // Process the data and update the HTML after the delay
+                    updateCommentsAmount(response.data);
+                }, 100);
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
+
+    // Query for categories.
+    $.ajax({
+        url: 'http://localhost:8080/category',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                displayCategories(response.data);
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
+
+    function displayCategories(categories) {
+        // Get the element with the ID "categories-container"
+        var categoriesContainer = document.getElementById('categories-container');
+    
+        // Check if the container element exists
+        if (categoriesContainer) {
+            // Iterate through categories and create <li> elements
+            categories.forEach(function (category) {
+                // Create a new <li> element
+                var liElement = document.createElement('li');
+                liElement.className = 'bor18';
+    
+                // Create a new <a> element
+                var aElement = document.createElement('a');
+                aElement.href = '#';
+                aElement.className = 'dis-block stext-115 cl6 hov-cl1 trans-04 p-tb-8 p-lr-4';
+                aElement.textContent = category.name;
+    
+                // Append the <a> element to the <li> element
+                liElement.appendChild(aElement);
+    
+                // Append the <li> element to the categoriesContainer
+                categoriesContainer.appendChild(liElement);
+            });
+        }
+    }
+
+    function displayBlogs(blogs) {
         
         blogs.forEach(function (blog) {
             // Create an Image object to load the image
@@ -142,7 +209,7 @@ $(document).ready(function () {
                                         ${blog.tags}
                                         <span class="cl12 m-l-4 m-r-6">|</span>
                                     </span>
-                                    <span> 8 Comments </span>
+                                    <span id="commentContainer_${blog.id}"> 0 Comments </span>
                                     </span>
                                     <a
                                     href="blog-detail.html"
@@ -205,11 +272,34 @@ $(document).ready(function () {
                 tagElement.href = '#';
                 tagElement.className = 'flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5';
                 tagElement.textContent = tag;
+                
+                // Add an event listener to the tag
+                tagElement.addEventListener('click', function (event) {
+                    event.preventDefault();
 
+                    // Filter blogs based on the clicked tag and display them
+                    var filteredBlogs = blogs.filter(function (blog) {
+                        var tagsArray = blog.tags.split(',');
+                        return tagsArray.map(function (t) {
+                            return t.trim();
+                        }).includes(tag);
+                    });
+
+                    // Call a function to display the filtered blogs (replace with your actual function)
+                    displayFilteredBlogs(filteredBlogs);
+                });
                 // Append the <a> tag to the tagsContainer
                 tagsContainer.appendChild(tagElement);
             });
         }
+    }
+
+    function displayFilteredBlogs(filteredBlogs) {
+        // Clear the existing blogs on the page (replace this with your actual implementation)
+        blogContainer.empty();
+    
+        // Display the filtered blogs (replace this with your actual implementation)
+        displayBlogs(filteredBlogs);
     }
 
     function displaySortedBlogDates(blogs) {
@@ -271,6 +361,31 @@ $(document).ready(function () {
             liElement.appendChild(aElement);
 
             // Append the <li> to the existing <ul> container
+            liElement.addEventListener('click', function (event) {
+                
+                event.preventDefault();
+
+                // Extract the text content of the clicked element
+                var clickedDateText = liElement.textContent.trim();
+
+                // Convert the text content to a Date object
+                var targetDate = new Date(clickedDateText);
+
+                // Filter blogs based on the clicked date
+                var filteredBlogs = blogs.filter(function (blog) {
+                    // Assuming createDate is a Date object
+                    var blogDate = new Date(blog.createDate);
+
+                    // Compare the year, month, and day of the blogs
+                    return (
+                        blogDate.getFullYear() === targetDate.getFullYear() &&
+                        blogDate.getMonth() === targetDate.getMonth()
+                    );
+                });
+
+                // Call a function to display the filtered blogs (replace with your actual function)
+                displayFilteredBlogs(filteredBlogs);
+            });
             sortedMonthsContainer.appendChild(liElement);    
         });
     }
@@ -335,5 +450,35 @@ $(document).ready(function () {
             [shuffledProducts[i], shuffledProducts[j]] = [shuffledProducts[j], shuffledProducts[i]];
         }
         return shuffledProducts.slice(0, num);
+    }
+    
+    function updateCommentsAmount(comments) {
+        // Create an object to store the counts for each blog
+        var blogCounts = {};
+    
+        // Iterate through the comments and count them for each blog
+        comments.forEach(function (comment) {
+            var blogId = comment.idBlog;
+    
+            // If the blogId is not in the counts object, initialize it to 1
+            if (!blogCounts[blogId]) {
+                blogCounts[blogId] = 1;
+            } else {
+                // Increment the count for the blogId
+                blogCounts[blogId]++;
+            }
+        });
+    
+        // Log the counts for each blog
+        for (var blogId in blogCounts) {
+            var spanId = 'commentContainer_' + blogId;
+            var commentContainer = document.getElementById(spanId);
+            if (commentContainer) {
+                // Update the content of the span with the new comment count
+                commentContainer.textContent = blogCounts[blogId] + ' Comments';
+            } else {
+                console.error('Span element not found with ID:', spanId);
+            }
+        }
     }
 });
