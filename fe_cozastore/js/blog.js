@@ -8,6 +8,7 @@ $(document).ready(function () {
             if (response.statusCode === 200) {
                 displayBlog(response.data);
                 displayTags(response.data);
+                displaySortedBlogDates(response.data);
             } else {
                 console.error('Error: ' + response.message);
             }
@@ -192,5 +193,63 @@ $(document).ready(function () {
                 tagsContainer.appendChild(tagElement);
             });
         }
-        }
+    }
+
+    function displaySortedBlogDates(blogs) {
+        // Create an object to store blogs grouped by month
+        var blogsByMonth = {};
+        var monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        // Iterate through each blog
+        blogs.forEach(function (blog) {
+            var createDate = new Date(blog.createDate);
+    
+            var year = createDate.getFullYear();
+            var month = createDate.getMonth() + 1;
+
+            var monthName = monthNames[month - 1];
+            
+            var key = monthName + ' ' + year;
+    
+            // Check if the key already exists, if not, create an empty array
+            if (!blogsByMonth[key]) {
+                blogsByMonth[key] = [];
+            }
+    
+            // Add the blog to the array corresponding to the key
+            blogsByMonth[key].push(blog);
+        });
+    
+        var sortedMonths = Object.keys(blogsByMonth).sort();
+    
+        sortedMonths.forEach(function (key) {
+            // Create a new <li> element
+            var liElement = document.createElement('li');
+            liElement.className = 'p-b-7';
+
+            // Create a new <a> element
+            var aElement = document.createElement('a');
+            aElement.className = 'flex-w flex-sb-m stext-115 cl6 hov-cl1 trans-04 p-tb-2';
+
+            // Create a new <span> element for the month and add it to the <a> element
+            var monthSpan = document.createElement('span');
+            monthSpan.textContent = key;
+            aElement.appendChild(monthSpan);
+
+            // Create a new <span> element for the count (number of blogs) and add it to the <a> element
+            var countSpan = document.createElement('span');
+            countSpan.textContent = ' (' + blogsByMonth[key].length + ')';
+            aElement.appendChild(countSpan);
+
+            // Add the <a> element to the <li> element
+            liElement.appendChild(aElement);
+
+            // Append the <li> to the existing <ul> container
+            sortedMonthsContainer.appendChild(liElement);
+    
+            console.log('Published in ' + key); // Grouped posts here.
+        });
+    }
 });
