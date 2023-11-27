@@ -1,6 +1,11 @@
 $(document).ready(function () {
     var blogContainer = $('#blog-container');
 
+    // Get the value of the 'date-filter' parameter from the URL
+    var dateFilter = new URLSearchParams(window.location.search).get('date-filter');
+
+    var tagFilter = new URLSearchParams(window.location.search).get('tag-filter');
+
     // Query for blogs.
     $.ajax({
         url: 'http://localhost:8080/blogs',
@@ -11,6 +16,42 @@ $(document).ready(function () {
                 displayBlogs(response.data);
                 displayTags(response.data);
                 displaySortedBlogDates(response.data);
+                if (dateFilter !== null) {
+                    // Convert dateFilter to a Date object
+                    var filterDate = new Date(dateFilter);
+    
+                    // Introduce a delay of 100 milliseconds
+                    setTimeout(function () {
+                        var filteredBlogs = response.data.filter(function (blog) {
+                            // Assuming createDate is a Date object
+                            var blogDate = new Date(blog.createDate);
+    
+                            // Compare the year, month, and day of the blogs
+                            return (
+                                blogDate.getFullYear() === filterDate.getFullYear() &&
+                                blogDate.getMonth() === filterDate.getMonth()
+                            );
+                        });
+    
+                        // Call a function to display the filtered blogs (replace with your actual function)
+                        displayFilteredBlogs(filteredBlogs);
+                    }, 200);
+                }
+                if (tagFilter !== null) {
+                    var tag = tagFilter;  
+                    // Introduce a delay of 100 milliseconds
+                    setTimeout(function () {
+                        var filteredBlogs = response.data.filter(function (blog) {
+                            var tagsArray = blog.tags.split(',');
+                            return tagsArray.map(function (t) {
+                                return t.trim();
+                            }).includes(tag);
+                        });
+    
+                        // Call a function to display the filtered blogs (replace with your actual function)
+                        displayFilteredBlogs(filteredBlogs);
+                    }, 200);
+                }
             }
         },
         error: function (xhr, status, error) {
@@ -121,17 +162,18 @@ $(document).ready(function () {
                         // Create HTML elements for each blog
                         var blogHtml = `
                             <div class="p-b-63">
-                                <a href="blog-detail.html" class="hov-img0 how-pos5-parent">
+                                <a href="blog-detail.html?blog-id=${blog.id}" class="hov-img0 how-pos5-parent">
                                 <img src="${img.src}" alt="${blog.title}" />
                                 <div class="flex-col-c-m size-123 bg9 how-pos5" id="dateContainer_${blog.id}">
                                 <script type="text/javascript">
-                                    var apiUrl = 'http://localhost:8080/blogs/' + ${blog.idUser};
+                                    var apiUrl = 'http://localhost:8080/blogs/' + ${blog.id};
 
                                     fetch(apiUrl)
                                         .then(response => response.json())
                                         .then(userData => {
                                             // Convert the string to a JavaScript Date object
                                             var createDate = new Date(userData.data.createDate);
+                                            console.log('Create Date:', createDate);
 
                                             var monthNames = [
                                                 'JAN', 'FEB', 'MAR', 'APR', 'MAT', 'JUN',
@@ -367,7 +409,7 @@ $(document).ready(function () {
 
                 // Extract the text content of the clicked element
                 var clickedDateText = liElement.textContent.trim();
-
+                
                 // Convert the text content to a Date object
                 var targetDate = new Date(clickedDateText);
 
