@@ -6,6 +6,18 @@ $(document).ready(function () {
 
     var tagFilter = new URLSearchParams(window.location.search).get('tag-filter');
 
+    // Retrieve filteredBlogs from localStorage
+    var filteredBlogs = JSON.parse(localStorage.getItem('filteredBlogs'));
+
+    // Check if filteredBlogs is not null or undefined
+    if (filteredBlogs) {
+        setTimeout(function () {
+            displayFilteredBlogs(filteredBlogs);
+        }, 100);
+
+        localStorage.removeItem('filteredBlogs');
+    }
+
     // Query for blogs.
     $.ajax({
         url: 'http://localhost:8080/blogs',
@@ -58,7 +70,7 @@ $(document).ready(function () {
             console.error('Error: ' + status + ' - ' + error);
         }
     });
-
+    
     // Query for products. (Random display)
     $.ajax({
         url: 'http://localhost:8080/product',
@@ -114,6 +126,32 @@ $(document).ready(function () {
         error: function (xhr, status, error) {
             console.error('Error: ' + status + ' - ' + error);
         }
+    });
+
+    document.getElementById('searchButton').addEventListener('click', function () {
+        // Query for blogs.
+        $.ajax({
+            url: 'http://localhost:8080/blogs',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.statusCode === 200) {
+                    // Get the value from the search input
+                    var searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+                    // Filter blogs based on the search keyword
+                    var filteredBlogs = response.data.filter(function (blog) {
+                        return blog.title.toLowerCase().includes(searchKeyword);
+                    });
+
+                    displayFilteredBlogs(filteredBlogs);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error: ' + status + ' - ' + error);
+            }
+        });
+        
     });
 
     function displayCategories(categories) {
@@ -173,7 +211,6 @@ $(document).ready(function () {
                                         .then(userData => {
                                             // Convert the string to a JavaScript Date object
                                             var createDate = new Date(userData.data.createDate);
-                                            console.log('Create Date:', createDate);
 
                                             var monthNames = [
                                                 'JAN', 'FEB', 'MAR', 'APR', 'MAT', 'JUN',

@@ -121,6 +121,36 @@ $(document).ready(function () {
         });
     }, 150);
 
+    document.getElementById('searchButton').addEventListener('click', function () {
+        // Query for blogs.
+        $.ajax({
+            url: 'http://localhost:8080/blogs',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.statusCode === 200) {
+                    // Get the value from the search input
+                    var searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+                    // Filter blogs based on the search keyword
+                    var filteredBlogs = response.data.filter(function (blog) {
+                        return blog.title.toLowerCase().includes(searchKeyword);
+                    });
+
+                    // Store the filteredBlogs in localStorage
+                    localStorage.setItem('filteredBlogs', JSON.stringify(filteredBlogs));
+
+                    // Redirect to blog.html
+                    window.location.href = 'http://127.0.0.1:5500/blog.html';
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error: ' + status + ' - ' + error);
+            }
+        });
+        
+    });
+
     function displayBlog(blog) {
         var blogContainer = $('#blog-container');
         
