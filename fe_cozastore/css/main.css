@@ -2971,3 +2971,8 @@ input.num-product::-webkit-inner-spin-button {
   }
 
 }
+
+#product-container {
+  min-height: 200px !important;
+  height: auto !important;
+}

@@ -278,6 +278,76 @@
         $('.js-modal1').removeClass('show-modal1');
     });
 
+    // New added code.
+
+    
+    // Connections.
+    var sortAscendingPriceButton = document.getElementById("sortAscendingPriceButton");
+    
+    sortAscendingPriceButton.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(sortProductByPriceAscending(queried_products_list));
+    });
+
+    var sortDescendingPriceButton = document.getElementById("sortDescendingPriceButton");
+    
+    sortDescendingPriceButton.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(sortProductByPriceDescending(queried_products_list));
+    });
+
+    var filterRangeButton1 = document.getElementById("filterRangeButton1");
+
+    filterRangeButton1.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 0, 9999999999));
+    });
+
+    var filterRangeButton2 = document.getElementById("filterRangeButton2");
+
+    filterRangeButton2.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 0, 50));
+    });
+
+    var filterRangeButton3 = document.getElementById("filterRangeButton3");
+
+    filterRangeButton3.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 50, 100));
+    });
+
+    var filterRangeButton4 = document.getElementById("filterRangeButton4");
+
+    filterRangeButton4.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 100, 150));
+    });
+
+    var filterRangeButton5 = document.getElementById("filterRangeButton5");
+
+    filterRangeButton5.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 150, 200));
+    });
+
+    var filterRangeButton6 = document.getElementById("filterRangeButton6");
+
+    filterRangeButton6.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByRange(queried_products_list, 200, 9999999999));
+    });
+
+    var queried_products_list;
+
     $.ajax({
         url: 'http://localhost:8080/product',
         type: 'GET',
@@ -285,7 +355,8 @@
         success: function (response) {
             if (response.statusCode === 200) {
                 // Process the data and update the HTML
-                displayProducts(response.data);
+                queried_products_list = response.data;
+                displayProducts(queried_products_list);
             } else {
                 console.error('Error: ' + response.message);
             }
@@ -295,14 +366,40 @@
         }
     });
 
-    function displayProducts(products) {
-        var productContainer = $('#product-container'); // Replace with your actual container ID
+    function sortProductByPriceDescending(product_list) {
+        // Sort the products by price in descending order
+        product_list.sort(function (a, b) {
+            return b.price - a.price;
+        });
     
+        // Return the sorted list
+        return product_list;
+    }
+
+    function sortProductByPriceAscending(product_list) {
+        // Sort the products by price in descending order
+        product_list.sort(function (a, b) {
+            return a.price - b.price;
+        });
+    
+        // Return the sorted list
+        return product_list;
+    }
+
+    function filterProductsByRange(product_list, lower_bound, upper_bound) {
+        return product_list.filter(function (product) {
+            return product.price >= lower_bound && product.price <= upper_bound;
+        });
+    }
+
+    function displayProducts(products) {
+        var productContainer = $('#product-container');
+    
+        productContainer.empty(); // Reset
+
         products.forEach(function (product) {
-            // Create an Image object to load the image
             var img = new Image();
             
-            // Set up the onload and onerror handlers
             img.onload = function () {
                 // Create HTML elements for each product
                 var productHtml = `
@@ -332,7 +429,6 @@
                     </div>
                 `;
     
-                // Append the product HTML to the container
                 productContainer.append(productHtml);
             };
     
@@ -340,7 +436,6 @@
                 console.error('Error loading image:', img.src);
             };
     
-            // Set the image source to trigger loading
             img.src = 'http://localhost:8080/api/images/' + product.images;
         });
     }
