@@ -18,6 +18,37 @@ $(document).ready(function () {
         localStorage.removeItem('filteredBlogs');
     }
 
+    var page1Button = document.getElementById("page1Button");
+
+    page1Button.addEventListener("click", function (event) {
+        event.preventDefault();
+        blogContainer.empty();
+        
+        changePageHighlight(page1Button);
+        displayBlogs(queried_blogs_list, 1, 5);
+    });
+
+    var page2Button = document.getElementById("page2Button");
+
+    page2Button.addEventListener("click", function (event) {
+        event.preventDefault();
+        blogContainer.empty();
+        changePageHighlight(page2Button);        
+        displayBlogs(queried_blogs_list, 2, 5);
+    });
+
+    function changePageHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.how-pagination1');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('active-pagination1');
+        });
+
+        selected_button.classList.add('active-pagination1');
+    }
+
+    var queried_blogs_list;
+
     // Query for blogs.
     $.ajax({
         url: 'http://localhost:8080/blogs',
@@ -25,7 +56,8 @@ $(document).ready(function () {
         dataType: 'json',
         success: function (response) {
             if (response.statusCode === 200) {
-                displayBlogs(response.data);
+                queried_blogs_list = response.data;
+                displayBlogs(response.data, 1, 5);
                 displayTags(response.data);
                 displaySortedBlogDates(response.data);
                 if (dateFilter !== null) {
@@ -180,13 +212,16 @@ $(document).ready(function () {
             });
         }
     }
-
-    function displayBlogs(blogs) {
+    
+    function displayBlogs(blogs, currentPage, blogsPerPage) {
         blogs.sort(function(a, b) {
             return new Date(b.createDate) - new Date(a.createDate);
         });
         
-        blogs.forEach(function (blog) {
+        const startIndex = (currentPage - 1) * blogsPerPage;
+        const endIndex = startIndex + blogsPerPage;
+
+        blogs.slice(startIndex, endIndex).forEach(function (blog) {
             $.ajax({
                 url: 'http://localhost:8080/user/' + blog.idUser,
                 type: 'GET',
@@ -369,7 +404,7 @@ $(document).ready(function () {
         blogContainer.empty();
     
         // Display the filtered blogs (replace this with your actual implementation)
-        displayBlogs(filteredBlogs);
+        displayBlogs(filteredBlogs, 1, 5);
     }
 
     function displaySortedBlogDates(blogs) {
