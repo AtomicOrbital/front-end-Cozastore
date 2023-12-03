@@ -185,54 +185,91 @@ $(document).ready(function () {
         blogs.sort(function(a, b) {
             return new Date(b.createDate) - new Date(a.createDate);
         });
-
+        
         blogs.forEach(function (blog) {
-            // Create an Image object to load the image
-            var img = new Image();
+            $.ajax({
+                url: 'http://localhost:8080/user/' + blog.idUser,
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                cache: false,
+                success: function (userResponse) {
+                    
             
-            // Set up the onload and onerror handlers
-            img.onload = function () {
-                // Make an AJAX request to get user details
-                $.ajax({
-                    url: 'http://localhost:8080/user/' + blog.idUser,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (userResponse) {
-                        
-                
-                        // Create HTML elements for each blog
-                        var blogHtml = `
-                            <div class="p-b-63">
-                                <a href="blog-detail.html?blog-id=${blog.id}" class="hov-img0 how-pos5-parent">
-                                <img src="${img.src}" alt="${blog.title}" />
-                                <div class="flex-col-c-m size-123 bg9 how-pos5" id="dateContainer_${blog.id}">
+                    // Create HTML elements for each blog
+                    var blogHtml = `
+                        <div class="p-b-63">
+                            <a href="blog-detail.html?blog-id=${blog.id}" class="hov-img0 how-pos5-parent">
+                            <img src="http://localhost:8080/api/images/${blog.image}" alt="${blog.title}" />
+                            <div class="flex-col-c-m size-123 bg9 how-pos5" id="dateContainer_${blog.id}">
+                            <script type="text/javascript">
+                                var apiUrl = 'http://localhost:8080/blogs/' + ${blog.id};
+
+                                fetch(apiUrl)
+                                    .then(response => response.json())
+                                    .then(userData => {
+                                        // Convert the string to a JavaScript Date object
+                                        var createDate = new Date(userData.data.createDate);
+
+                                        var monthNames = [
+                                            'JAN', 'FEB', 'MAR', 'APR', 'MAR', 'JUN',
+                                            'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+                                        ];
+
+                                        // Extract the year, month, and date
+                                        var year = createDate.getFullYear();
+                                        var month = createDate.getMonth() + 1; // Months are zero-based, so add 1
+                                        var date = createDate.getDate();
+
+                                        var monthName = monthNames[month - 1]; // Subtract 1 because months are zero-based
+
+                                        // Create HTML for the new <span> element
+                                        var newSpanHTML =   '<span class="ltext-107 cl2 txt-center">' + date + '</span>' + 
+                                                            '<span class="stext-109 cl3 txt-center">' + monthName + ' ' + year + '</span>';
+
+                                        // Insert the new <span> element after the first <span> in the specific parent container
+                                        var parentContainer = document.getElementById('dateContainer_${blog.id}');
+                                        if (parentContainer) {
+                                            parentContainer.insertAdjacentHTML('afterbegin', newSpanHTML);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        // Handle the error here
+                                        console.error('Error fetching user data:', err);
+                                    });
+                            </script>
+
+                            </div>
+                            </a>
+                            <div class="p-t-32">
+                            <h4 class="p-b-15">
+                                <a
+                                href="blog-detail.html"
+                                class="ltext-108 cl2 hov-cl1 trans-04"
+                                >
+                                ${blog.title}
+                                </a>
+                            </h4>
+                            <p class="stext-117 cl6">
+                                ${blog.content}
+                            </p>
+                            <div class="flex-w flex-sb-m p-t-18" id="userContainer_${blog.id}">
+                                <span class="flex-w flex-m stext-111 cl2 p-r-30 m-tb-10">
+                                <span>
+
+                                
                                 <script type="text/javascript">
-                                    var apiUrl = 'http://localhost:8080/blogs/' + ${blog.id};
+                                    var apiUrl = 'http://localhost:8080/user/' + ${blog.idUser};
 
                                     fetch(apiUrl)
                                         .then(response => response.json())
                                         .then(userData => {
-                                            // Convert the string to a JavaScript Date object
-                                            var createDate = new Date(userData.data.createDate);
-
-                                            var monthNames = [
-                                                'JAN', 'FEB', 'MAR', 'APR', 'MAR', 'JUN',
-                                                'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
-                                            ];
-
-                                            // Extract the year, month, and date
-                                            var year = createDate.getFullYear();
-                                            var month = createDate.getMonth() + 1; // Months are zero-based, so add 1
-                                            var date = createDate.getDate();
-
-                                            var monthName = monthNames[month - 1]; // Subtract 1 because months are zero-based
 
                                             // Create HTML for the new <span> element
-                                            var newSpanHTML =   '<span class="ltext-107 cl2 txt-center">' + date + '</span>' + 
-                                                                '<span class="stext-109 cl3 txt-center">' + monthName + ' ' + year + '</span>';
+                                            var newSpanHTML = '<span class="cl4">' + userData.data.username + '</span>';
 
                                             // Insert the new <span> element after the first <span> in the specific parent container
-                                            var parentContainer = document.getElementById('dateContainer_${blog.id}');
+                                            var parentContainer = document.getElementById('userContainer_${blog.id}');
                                             if (parentContainer) {
                                                 parentContainer.insertAdjacentHTML('afterbegin', newSpanHTML);
                                             }
@@ -243,83 +280,34 @@ $(document).ready(function () {
                                         });
                                 </script>
 
-                                </div>
+
+
+                                </span>
+                                <span>
+                                    ${blog.tags}
+                                    <span class="cl12 m-l-4 m-r-6">|</span>
+                                </span>
+                                <span id="commentContainer_${blog.id}"> 0 Comments </span>
+                                </span>
+                                <a
+                                href="blog-detail.html"
+                                class="stext-101 cl2 hov-cl1 trans-04 m-tb-10"
+                                >
+                                Continue Reading
+                                <i class="fa fa-long-arrow-right m-l-9"></i>
                                 </a>
-                                <div class="p-t-32">
-                                <h4 class="p-b-15">
-                                    <a
-                                    href="blog-detail.html"
-                                    class="ltext-108 cl2 hov-cl1 trans-04"
-                                    >
-                                    ${blog.title}
-                                    </a>
-                                </h4>
-                                <p class="stext-117 cl6">
-                                    ${blog.content}
-                                </p>
-                                <div class="flex-w flex-sb-m p-t-18" id="userContainer_${blog.id}">
-                                    <span class="flex-w flex-m stext-111 cl2 p-r-30 m-tb-10">
-                                    <span>
-
-                                    
-                                    <script type="text/javascript">
-                                        var apiUrl = 'http://localhost:8080/user/' + ${blog.idUser};
-
-                                        fetch(apiUrl)
-                                            .then(response => response.json())
-                                            .then(userData => {
-
-                                                // Create HTML for the new <span> element
-                                                var newSpanHTML = '<span class="cl4">' + userData.data.username + '</span>';
-
-                                                // Insert the new <span> element after the first <span> in the specific parent container
-                                                var parentContainer = document.getElementById('userContainer_${blog.id}');
-                                                if (parentContainer) {
-                                                    parentContainer.insertAdjacentHTML('afterbegin', newSpanHTML);
-                                                }
-                                            })
-                                            .catch(err => {
-                                                // Handle the error here
-                                                console.error('Error fetching user data:', err);
-                                            });
-                                    </script>
-
-
-
-                                    </span>
-                                    <span>
-                                        ${blog.tags}
-                                        <span class="cl12 m-l-4 m-r-6">|</span>
-                                    </span>
-                                    <span id="commentContainer_${blog.id}"> 0 Comments </span>
-                                    </span>
-                                    <a
-                                    href="blog-detail.html"
-                                    class="stext-101 cl2 hov-cl1 trans-04 m-tb-10"
-                                    >
-                                    Continue Reading
-                                    <i class="fa fa-long-arrow-right m-l-9"></i>
-                                    </a>
-                                </div>
-                                </div>
                             </div>
-                        `;
-            
-                        // Append the blog HTML to the container
-                        blogContainer.append(blogHtml);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting user details:', status, error);
-                    }
-                });
-            };
-    
-            img.onerror = function () {
-                console.error('Error loading image:', img.src);
-            };
-    
-            // Set the image source to trigger loading
-            img.src = 'http://localhost:8080/api/images/' + blog.image;
+                            </div>
+                        </div>
+                    `;
+        
+                    // Append the blog HTML to the container
+                    blogContainer.append(blogHtml);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting user details:', status, error);
+                }
+            });
         });
     }
     
