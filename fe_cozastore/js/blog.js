@@ -182,7 +182,10 @@ $(document).ready(function () {
     }
 
     function displayBlogs(blogs) {
-        
+        blogs.sort(function(a, b) {
+            return new Date(b.createDate) - new Date(a.createDate);
+        });
+
         blogs.forEach(function (blog) {
             // Create an Image object to load the image
             var img = new Image();
@@ -213,7 +216,7 @@ $(document).ready(function () {
                                             var createDate = new Date(userData.data.createDate);
 
                                             var monthNames = [
-                                                'JAN', 'FEB', 'MAR', 'APR', 'MAT', 'JUN',
+                                                'JAN', 'FEB', 'MAR', 'APR', 'MAR', 'JUN',
                                                 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
                                             ];
 

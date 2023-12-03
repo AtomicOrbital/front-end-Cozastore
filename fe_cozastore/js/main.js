@@ -468,6 +468,7 @@
                 // Process the data and update the HTML
                 queried_products_list = response.data;
                 displayProducts(queried_products_list);
+                displayTags(queried_products_list);
             } else {
                 console.error('Error: ' + response.message);
             }
@@ -624,6 +625,47 @@
     
             img.src = 'http://localhost:8080/api/images/' + product.images;
         });
+    }
+
+    function displayTags(products) {
+        var uniqueTags = [];
+
+        products.forEach(function (product) {
+            var tagsArray = product.tags.split(',');
+
+            tagsArray.forEach(function (tag) {
+                var trimmedTag = tag.trim();
+
+                if (!uniqueTags.includes(trimmedTag)) {
+                    uniqueTags.push(trimmedTag);
+                }
+            });
+        });
+
+        var tagsContainer = document.getElementById('tagsContainer');
+
+        if (tagsContainer) {
+            uniqueTags.forEach(function (tag) {
+                var tagElement = document.createElement('a');
+                tagElement.href = '#';
+                tagElement.className = 'flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5';
+                tagElement.textContent = tag;
+                
+                tagElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    var filteredProducts = products.filter(function (product) {
+                        var tagsArray = product.tags.split(',');
+                        return tagsArray.map(function (t) {
+                            return t.trim();
+                        }).includes(tag);
+                    });
+
+                    displayProducts(filteredProducts);
+                });
+                tagsContainer.appendChild(tagElement);
+            });
+        }
     }
     });
 })(jQuery);
