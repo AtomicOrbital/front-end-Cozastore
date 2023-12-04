@@ -456,8 +456,63 @@
         displayProducts(filterProductsByColor(queried_products_list, 8));
     });
 
+    var loadMoreButton = document.getElementById("loadMoreButton");
+
+    if(loadMoreButton != null)
+    {
+        loadMoreButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            max_displayed_products += 8;
+            displayProducts(queried_products_list);
+        });
+    }
+
+    var page1Button = document.getElementById("page1Button");
+    
+    if(page1Button != null){
+        page1Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page1Button);
+            displayProducts(queried_products_list, 0, 8);
+        });
+    }
+    
+    var page2Button = document.getElementById("page2Button");
+    
+    if(page2Button != null){
+        page2Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page2Button);
+            displayProducts(queried_products_list, 8, 16);
+        });
+    }
+
+    var page3Button = document.getElementById("page3Button");
+    
+    if(page3Button != null){
+        page3Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page3Button);
+            displayProducts(queried_products_list, 16, 24);
+        });
+    }
+
+    function changePageHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.how-pagination1');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('active-pagination1');
+        });
+
+        selected_button.classList.add('active-pagination1');
+    }
+
     var queried_products_list;
     var queried_product_details_list;
+    var max_displayed_products = 8;
 
     $.ajax({
         url: 'http://localhost:8080/product',
@@ -579,12 +634,20 @@
         selected_button.classList.add('filter-link-active');
     }
 
-    function displayProducts(products) {
+    function displayProducts(products, start_index, end_index) {
         var productContainer = $('#product-container');
     
         productContainer.empty(); // Reset
 
-        products.forEach(function (product) {
+        if(start_index == undefined){
+            start_index = 0;
+        }
+
+        if(end_index == undefined){
+            end_index = max_displayed_products;
+        }
+
+        products.slice(start_index, end_index).forEach(function (product) {
             // Create HTML elements for each product
             var productHtml = `
                 <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.idCategory}">
