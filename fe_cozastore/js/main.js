@@ -510,6 +510,17 @@
         selected_button.classList.add('active-pagination1');
     }
 
+    document.getElementById('searchButton').addEventListener('click', function () {
+        var searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+        // Filter products based on the search keyword
+        var filteredProducts = queried_products_list.filter(function (product) {
+            return product.title.toLowerCase().includes(searchKeyword);
+        });
+
+        displayProducts(filteredProducts);
+    });
+
     var queried_products_list;
     var queried_product_details_list;
     var max_displayed_products = 8;
@@ -682,12 +693,13 @@
 
         var isotopeItems = document.querySelectorAll('.isotope-item');
 
-        // Remove the inline styles from each element
-        isotopeItems.forEach(function(item) {
-            item.style.position = '';
-            item.style.left = '';
-            item.style.top = '';
-        });
+        setTimeout(function() {
+            isotopeItems.forEach(function(item) {
+                item.style.position = '';
+                item.style.left = '';
+                item.style.top = '';
+            });
+        }, 100);
     }
 
     function displayTags(products) {
