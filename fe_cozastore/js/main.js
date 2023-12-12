@@ -2,6 +2,7 @@
 (function ($) {
     "use strict";
 
+    $(document).ready(function () {
     /*[ Load page ]
     ===========================================================*/
     $(".animsition").animsition({
@@ -277,6 +278,469 @@
         $('.js-modal1').removeClass('show-modal1');
     });
 
+    // New added code.
 
+    
+    // Connections.
+    var sortAscendingPriceButton = document.getElementById("sortAscendingPriceButton");
+    
+    sortAscendingPriceButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeMethodFilterHighlight(sortAscendingPriceButton);
+        displayProducts(sortProductByPriceAscending(queried_products_list));
+    });
 
+    var sortDescendingPriceButton = document.getElementById("sortDescendingPriceButton");
+    
+    sortDescendingPriceButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeMethodFilterHighlight(sortDescendingPriceButton);
+        displayProducts(sortProductByPriceDescending(queried_products_list));
+    });
+
+    var filterRangeButton1 = document.getElementById("filterRangeButton1");
+
+    filterRangeButton1.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changePriceFilterHighlight(filterRangeButton1);
+        displayProducts(filterProductsByRange(queried_products_list, 0, 9999999999));
+    });
+
+    var filterRangeButton2 = document.getElementById("filterRangeButton2");
+
+    filterRangeButton2.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changePriceFilterHighlight(filterRangeButton2);
+        displayProducts(filterProductsByRange(queried_products_list, 0, 50));
+    });
+
+    var filterRangeButton3 = document.getElementById("filterRangeButton3");
+
+    filterRangeButton3.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changePriceFilterHighlight(filterRangeButton3);
+        displayProducts(filterProductsByRange(queried_products_list, 50, 100));
+    });
+
+    var filterRangeButton4 = document.getElementById("filterRangeButton4");
+
+    filterRangeButton4.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        changePriceFilterHighlight(filterRangeButton4);
+        displayProducts(filterProductsByRange(queried_products_list, 100, 150));
+    });
+
+    var filterRangeButton5 = document.getElementById("filterRangeButton5");
+
+    filterRangeButton5.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        changePriceFilterHighlight(filterRangeButton5);
+        displayProducts(filterProductsByRange(queried_products_list, 150, 200));
+    });
+
+    var filterRangeButton6 = document.getElementById("filterRangeButton6");
+
+    filterRangeButton6.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changePriceFilterHighlight(filterRangeButton6);
+        displayProducts(filterProductsByRange(queried_products_list, 200, 9999999999));
+    });
+
+    var filterCategoryButton1 = document.getElementById("filterCategoryButton1");
+
+    filterCategoryButton1.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 0));
+    });
+
+    var filterCategoryButton2 = document.getElementById("filterCategoryButton2");
+
+    filterCategoryButton2.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 2));
+    });
+
+    var filterCategoryButton3 = document.getElementById("filterCategoryButton3");
+
+    filterCategoryButton3.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 1));
+    });
+
+    var filterCategoryButton4 = document.getElementById("filterCategoryButton4");
+
+    filterCategoryButton4.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 3));
+    });
+
+    var filterCategoryButton5 = document.getElementById("filterCategoryButton5");
+
+    filterCategoryButton5.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 4));
+    });
+
+    var filterCategoryButton6 = document.getElementById("filterCategoryButton6");
+
+    filterCategoryButton6.addEventListener("click", function (event) {
+        event.preventDefault();
+    
+        displayProducts(filterProductsByCategory(queried_products_list, 5));
+    });
+
+    var filterColorButton1 = document.getElementById("filterColorButton1");
+
+    filterColorButton1.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton1);
+        displayProducts(filterProductsByColor(queried_products_list, 4));
+    });
+
+    var filterColorButton2 = document.getElementById("filterColorButton2");
+
+    filterColorButton2.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton2);
+        displayProducts(filterProductsByColor(queried_products_list, 2));
+    });
+
+    var filterColorButton3 = document.getElementById("filterColorButton3");
+
+    filterColorButton3.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton3);
+        displayProducts(filterProductsByColor(queried_products_list, 5));
+    });
+
+    var filterColorButton4 = document.getElementById("filterColorButton4");
+
+    filterColorButton4.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton4);
+        displayProducts(filterProductsByColor(queried_products_list, 3));
+    });
+
+    var filterColorButton5 = document.getElementById("filterColorButton5");
+
+    filterColorButton5.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton5);
+        displayProducts(filterProductsByColor(queried_products_list, 1));
+    });
+
+    var filterColorButton6 = document.getElementById("filterColorButton6");
+
+    filterColorButton6.addEventListener("click", function (event) {
+        event.preventDefault();
+        
+        changeColorFilterHighlight(filterColorButton6);
+        displayProducts(filterProductsByColor(queried_products_list, 8));
+    });
+
+    var loadMoreButton = document.getElementById("loadMoreButton");
+
+    if(loadMoreButton != null)
+    {
+        loadMoreButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            max_displayed_products += 8;
+            displayProducts(queried_products_list);
+        });
+    }
+
+    var page1Button = document.getElementById("page1Button");
+    
+    if(page1Button != null){
+        page1Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page1Button);
+            displayProducts(queried_products_list, 0, 8);
+        });
+    }
+    
+    var page2Button = document.getElementById("page2Button");
+    
+    if(page2Button != null){
+        page2Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page2Button);
+            displayProducts(queried_products_list, 8, 16);
+        });
+    }
+
+    var page3Button = document.getElementById("page3Button");
+    
+    if(page3Button != null){
+        page3Button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            changePageHighlight(page3Button);
+            displayProducts(queried_products_list, 16, 24);
+        });
+    }
+
+    function changePageHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.how-pagination1');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('active-pagination1');
+        });
+
+        selected_button.classList.add('active-pagination1');
+    }
+
+    document.getElementById('searchButton').addEventListener('click', function () {
+        var searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+        // Filter products based on the search keyword
+        var filteredProducts = queried_products_list.filter(function (product) {
+            return product.title.toLowerCase().includes(searchKeyword);
+        });
+
+        displayProducts(filteredProducts);
+    });
+
+    var queried_products_list;
+    var queried_product_details_list;
+    var max_displayed_products = 8;
+
+    $.ajax({
+        url: 'http://localhost:8080/product',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                queried_products_list = response.data;
+                displayProducts(queried_products_list);
+                displayTags(queried_products_list);
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
+
+    $.ajax({
+        url: 'http://localhost:8080/product-details',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            if (response.statusCode === 200) {
+                // Process the data and update the HTML
+                queried_product_details_list = response.data;
+            } else {
+                console.error('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error: ' + status + ' - ' + error);
+        }
+    });
+
+    function sortProductByPriceDescending(product_list) {
+        // Sort the products by price in descending order
+        product_list.sort(function (a, b) {
+            return b.price - a.price;
+        });
+    
+        // Return the sorted list
+        return product_list;
+    }
+
+    function sortProductByPriceAscending(product_list) {
+        // Sort the products by price in descending order
+        product_list.sort(function (a, b) {
+            return a.price - b.price;
+        });
+    
+        // Return the sorted list
+        return product_list;
+    }
+
+    function filterProductsByRange(product_list, lower_bound, upper_bound) {
+        return product_list.filter(function (product) {
+            return product.price >= lower_bound && product.price <= upper_bound;
+        });
+    }
+
+    function filterProductsByCategory(product_list, category_id) {
+        if (category_id == 0){
+            return product_list;
+        }
+        return product_list.filter(function (product) {
+            return product.idCategory == category_id;
+        });
+    }
+
+    function filterProductDetailsByColor(product_details_list, color_id) {
+        return product_details_list.filter(function (product) {
+            return product.idColor == color_id;
+        });
+    }
+
+    function filterProductsByColor(product_list, color_id){
+        var temp_product_details_list = queried_product_details_list;
+
+        var products_to_lookup = filterProductDetailsByColor(temp_product_details_list, color_id);
+        const ids_to_lookip = products_to_lookup.map(product => product.idProduct);
+
+        console.log(ids_to_lookip);
+
+        return product_list.filter(function (product) {
+            return ids_to_lookip.includes(product.id);
+        });
+    }
+
+    function changeColorFilterHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.filter-link-color');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('filter-link-active');
+        });
+
+        selected_button.classList.add('filter-link-active');
+    }
+
+    function changePriceFilterHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.filter-link-price');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('filter-link-active');
+        });
+
+        selected_button.classList.add('filter-link-active');
+    }
+
+    function changeMethodFilterHighlight(selected_button){
+        const filterButtons = document.querySelectorAll('.filter-link-method');
+
+        filterButtons.forEach(function(button) {
+            button.classList.remove('filter-link-active');
+        });
+
+        selected_button.classList.add('filter-link-active');
+    }
+
+    function displayProducts(products, start_index, end_index) {
+        var productContainer = $('#product-container');
+    
+        productContainer.empty(); // Reset
+
+        if(start_index == undefined){
+            start_index = 0;
+        }
+
+        if(end_index == undefined){
+            end_index = max_displayed_products;
+        }
+
+        products.slice(start_index, end_index).forEach(function (product) {
+            // Create HTML elements for each product
+            var productHtml = `
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.idCategory}">
+                    <div class="block2">
+                        <div class="block2-pic hov-img0">
+                            <img src="http://localhost:8080/api/images/${product.images}" alt="${product.title}" />
+                            <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+                                Quick View
+                            </a>
+                        </div>
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l">
+                                <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    ${product.title}
+                                </a>
+                                <span class="stext-105 cl3"> $${product.price} </span>
+                            </div>
+                            <div class="block2-txt-child2 flex-r p-t-3">
+                                <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                    <img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON" />
+                                    <img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            productContainer.append(productHtml);
+
+        });
+
+        var isotopeItems = document.querySelectorAll('.isotope-item');
+
+        setTimeout(function() {
+            isotopeItems.forEach(function(item) {
+                item.style.position = '';
+                item.style.left = '';
+                item.style.top = '';
+            });
+        }, 100);
+    }
+
+    function displayTags(products) {
+        var uniqueTags = [];
+
+        products.forEach(function (product) {
+            var tagsArray = product.tags.split(',');
+
+            tagsArray.forEach(function (tag) {
+                var trimmedTag = tag.trim();
+
+                if (!uniqueTags.includes(trimmedTag)) {
+                    uniqueTags.push(trimmedTag);
+                }
+            });
+        });
+
+        var tagsContainer = document.getElementById('tagsContainer');
+
+        if (tagsContainer) {
+            uniqueTags.forEach(function (tag) {
+                var tagElement = document.createElement('a');
+                tagElement.href = '#';
+                tagElement.className = 'flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5';
+                tagElement.textContent = tag;
+                
+                tagElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    var filteredProducts = products.filter(function (product) {
+                        var tagsArray = product.tags.split(',');
+                        return tagsArray.map(function (t) {
+                            return t.trim();
+                        }).includes(tag);
+                    });
+
+                    displayProducts(filteredProducts);
+                });
+                tagsContainer.appendChild(tagElement);
+            });
+        }
+    }
+    });
 })(jQuery);
