@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProductDetail</title>
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Product Details Management</h2>
+        <button type="button" class="btn btn-primary mb-3 mt-2" data-bs-toggle="modal"
+            data-bs-target="#addProductDetailsModal">
+            Add Product Details
+        </button>
+        <table class="table" id="productDetailsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Color</th>
+                    <th>Product</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="modal fade" id="addProductDetailsModal" tabindex="-1" aria-labelledby="addProductDetailsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add New Product Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProductDetailsForm">
+                            <div class="mb-3">
+                                <label for="colorName" class="form-label">Color</label>
+                                <select class="form-select" id="colorName" required>
+                                    <option value="">Select a color name</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <select class="form-select" id="productName" required>
+                                    <option value="">Select a product name</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sizeName" class="form-label">Size</label>
+                                <select class="form-select" id="sizeName" required>
+                                    <option value="">Select a size</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" placeholder="Quantity" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea type="text" class="form-control" id="description" placeholder="Description"
+                                    rows="4" cols="50" required>
+                                </textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Product Details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editProductDetailModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductDetailModalLabel">Edit Product Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductDetailForm">
+                        <input type="hidden" id="productDetailId" name="producDetailtId">
+                        <div class="mb-3">
+                            <label for="editColorName" class="form-label">Color</label>
+                            <select class="form-select" id="editColorName" required>
+                                <option value="">Select a color name</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Product Name</label>
+                            <select class="form-select" id="editProductName" required>
+                                <option value="">Select a product name</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editSizeName" class="form-label">Size</label>
+                            <select class="form-select" id="editSizeName" required>
+                                <option value="">Select a size</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editQuantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="editQuantity" placeholder="Quantity" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <textarea type="text" class="form-control" id="editDescription" placeholder="Description"
+                                rows="4" cols="50" required>
+                            </textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Edit Product Detail</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+    <script src="./js/ProductDetailAdmin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+#sidebar {
+    min-height: 100vh;
+}
+
+.vertical-nav {
+    min-width: 250px;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s;
+}
+
+.page-content {
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    transition: all 0.4s;
+}
+
+@media (max-width: 768px) {
+    .vertical-nav {
+        width: 45px;
+    }
+
+    .page-content {
+        width: calc(100% - 45px);
+        margin-left: 45px;
+    }
+
+    .vertical-nav .nav-link span {
+        display: none;
+    }
+}

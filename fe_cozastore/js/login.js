@@ -22,7 +22,7 @@ $(document).ready(function () {
             }
         }).done(function (result) {
             if (result) {
-                let token = result.data;
+                let token = result.data.token;
                 localStorage.setItem("token", token);
             }
             console.log("server tra ve ", result)
